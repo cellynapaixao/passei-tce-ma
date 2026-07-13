@@ -25,9 +25,9 @@ export const submitAttempt = createServerFn({ method: "POST" })
       p_selected_key: data.selected_key,
       p_response_time_ms: data.response_time_ms,
       p_confidence: data.confidence ?? null,
-    });
+    } as never);
     if (error) throw new Error(error.message);
-    return rpc as {
+    return rpc as unknown as {
       attempt_id: string;
       is_correct: boolean;
       correct_key: string;
