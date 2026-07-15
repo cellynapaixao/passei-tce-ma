@@ -173,6 +173,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ApplyPreferences />
       <Outlet />
+      <Toaster />
     </QueryClientProvider>
   );
 }
