@@ -114,7 +114,7 @@ export function QuestionCard({
 
   return (
     <article
-      className="question-surface p-5 md:p-7"
+      className="question-surface p-4 sm:p-5 md:p-7"
       onKeyDown={handleKeyDown}
       aria-labelledby="q-statement"
     >
@@ -215,7 +215,7 @@ export function QuestionCard({
           <legend className="mb-2 text-sm text-muted-foreground">
             Confiança na resposta (opcional)
           </legend>
-          <div className="inline-flex overflow-hidden rounded-lg border border-border">
+          <div className="grid grid-cols-3 overflow-hidden rounded-lg border border-border">
             {(
               [
                 ["baixa", "Baixa"],
@@ -229,7 +229,7 @@ export function QuestionCard({
                 aria-pressed={confidence === value}
                 onClick={() => setConfidence(confidence === value ? null : value)}
                 className={cn(
-                  "min-h-11 min-w-24 border-r border-border px-4 text-sm last:border-r-0",
+                  "min-h-11 min-w-0 border-r border-border px-2 text-sm last:border-r-0 sm:min-w-24 sm:px-4",
                   confidence === value
                     ? "bg-[var(--gold)]/15 text-[var(--gold)]"
                     : "text-muted-foreground hover:bg-accent",
@@ -278,16 +278,22 @@ export function QuestionCard({
         )}
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs text-muted-foreground">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="hidden text-xs text-muted-foreground sm:block">
           Atalhos: 1–{question.alternatives.length} selecionam · Enter confirma.
         </p>
         {feedback ? (
-          <Button variant="gold" size="lg" onClick={onNext}>
+          <Button variant="gold" size="lg" onClick={onNext} className="w-full sm:w-auto">
             Próxima questão
           </Button>
         ) : (
-          <Button variant="gold" size="lg" onClick={submit} disabled={!selected || submitting}>
+          <Button
+            variant="gold"
+            size="lg"
+            onClick={submit}
+            disabled={!selected || submitting}
+            className="w-full sm:w-auto"
+          >
             {submitting ? (
               <>
                 <Loader2 className="animate-spin" /> Enviando…

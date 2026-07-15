@@ -91,7 +91,7 @@ function PrefsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 space-y-8">
+    <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 sm:space-y-8 sm:py-10">
       <div>
         <h1 className="font-display text-2xl font-semibold">Preferências</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -99,7 +99,7 @@ function PrefsPage() {
         </p>
       </div>
 
-      <section className="surface-panel p-6 space-y-5" aria-labelledby="a11y">
+      <section className="surface-panel space-y-5 p-4 sm:p-6" aria-labelledby="a11y">
         <h2 id="a11y" className="font-display text-lg font-semibold">
           Acessibilidade
         </h2>
@@ -168,7 +168,7 @@ function PrefsPage() {
         </div>
       </section>
 
-      <section className="surface-panel p-6 space-y-4" aria-labelledby="cargo">
+      <section className="surface-panel space-y-4 p-4 sm:p-6" aria-labelledby="cargo">
         <h2 id="cargo" className="font-display text-lg font-semibold">
           Cargo preferido (opcional)
         </h2>

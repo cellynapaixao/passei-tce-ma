@@ -38,7 +38,10 @@ export function AccessibilityControls({
 
   return (
     <details className="relative">
-      <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-md border border-border/70 px-3 py-2 text-sm text-muted-foreground transition-colors hover:border-[var(--gold)]/60 hover:text-foreground [&::-webkit-details-marker]:hidden">
+      <summary
+        aria-label="Abrir ajustes de acessibilidade"
+        className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-md border border-border/70 px-3 py-2 text-sm text-muted-foreground transition-colors hover:border-[var(--gold)]/60 hover:text-foreground [&::-webkit-details-marker]:hidden"
+      >
         <Accessibility className="size-4" aria-hidden />
         <span className="hidden sm:inline">Acessibilidade</span>
       </summary>

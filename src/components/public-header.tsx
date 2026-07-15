@@ -37,9 +37,9 @@ export function PublicHeader({
           <Link
             to="/auth"
             search={{ mode: "signin" }}
-            className="hidden min-h-11 items-center px-2 text-sm text-muted-foreground hover:text-foreground sm:inline-flex"
+            className="hidden min-h-11 items-center px-2 text-sm text-muted-foreground hover:text-foreground md:inline-flex"
           >
-            Revisão
+            Minha conta
           </Link>
           <AccessibilityControls onChange={onAccessibilityChange} />
           <Link
@@ -49,7 +49,7 @@ export function PublicHeader({
             className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border/70 px-3 text-sm hover:border-[var(--gold)]/60"
           >
             <LogIn className="size-4 text-[var(--gold)]" aria-hidden />
-            <span className="hidden sm:inline">Entrar</span>
+            <span>Entrar</span>
           </Link>
         </div>
       </nav>
