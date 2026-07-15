@@ -11,8 +11,12 @@ import { getPreferences } from "@/lib/preferences.functions";
 import { QuestionCard, type QuestionCardData, type FeedbackData } from "@/components/question-card";
 import { CheckpointDialog } from "@/components/checkpoint-dialog";
 import { Button } from "@/components/ui/button";
+import { z } from "zod";
+
+const searchSchema = z.object({ mode: z.enum(["geral", "foco", "revisao"]).optional() });
 
 export const Route = createFileRoute("/_authenticated/treino")({
+  validateSearch: (search) => searchSchema.parse(search),
   head: () => ({
     meta: [{ title: "Treino — TCE-MA 2026" }, { name: "robots", content: "noindex" }],
   }),
@@ -39,7 +43,9 @@ function normalizeAlternatives(raw: unknown): { key: string; text: string }[] {
 }
 
 function TreinoPage() {
-  const [mode, setMode] = useState<Mode>("geral");
+  const search = Route.useSearch();
+  const initialMode = search.mode ?? "geral";
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [question, setQuestion] = useState<QuestionCardData | null>(null);
   const [feedback, setFeedback] = useState<FeedbackData | null>(null);
@@ -49,6 +55,7 @@ function TreinoPage() {
   const [checkpointOpen, setCheckpointOpen] = useState(false);
   const clientAttemptId = useRef<string>("");
   const [preferredPositionId, setPreferredPositionId] = useState<string | null>(null);
+  const [ttsEnabled, setTtsEnabled] = useState(false);
 
   const fetchNext = useServerFn(getNextQuestion);
   const startSess = useServerFn(startSession);
@@ -78,7 +85,9 @@ function TreinoPage() {
           });
         }
       } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Não foi possível carregar a próxima questão.");
+        toast.error(
+          e instanceof Error ? e.message : "Não foi possível carregar a próxima questão.",
+        );
       } finally {
         setLoading(false);
       }
@@ -91,10 +100,15 @@ function TreinoPage() {
       try {
         const prefs = await getPrefs();
         setPreferredPositionId(prefs.preferred_position_id ?? null);
-        const s = await startSess({ data: { mode: "geral", position_id: prefs.preferred_position_id ?? null } });
+        setTtsEnabled(!!prefs.tts_enabled);
+        const s = await startSess({
+          data: { mode: initialMode, position_id: prefs.preferred_position_id ?? null },
+        });
         setSessionId(s.id);
-      } catch {}
-      await loadNext("geral", []);
+      } catch {
+        // A sessão local continua disponível quando as preferências remotas falham.
+      }
+      await loadNext(initialMode, []);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -152,7 +166,9 @@ function TreinoPage() {
           payload: { value: a.value },
         },
       });
-    } catch {}
+    } catch {
+      // O checkpoint é opcional e não deve interromper a sequência de questões.
+    }
   }
 
   function handleSkipCheckin() {
@@ -236,6 +252,8 @@ function TreinoPage() {
           onNext={handleNext}
           feedback={feedback}
           submitting={submitting}
+          ttsEnabled={ttsEnabled}
+          showConfidence
         />
       )}
 

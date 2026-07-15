@@ -45,7 +45,9 @@ function RevisaoPage() {
             </p>
             <div className="mt-4">
               <Button asChild variant="gold" size="lg">
-                <Link to="/treino">Iniciar revisão</Link>
+                <Link to="/treino" search={{ mode: "revisao" }}>
+                  Iniciar revisão
+                </Link>
               </Button>
             </div>
           </>
@@ -57,7 +59,9 @@ function RevisaoPage() {
             </p>
             <div className="mt-4">
               <Button asChild variant="outline">
-                <Link to="/treino">Voltar ao treino</Link>
+                <Link to="/treino" search={{ mode: undefined }}>
+                  Voltar ao treino
+                </Link>
               </Button>
             </div>
           </>

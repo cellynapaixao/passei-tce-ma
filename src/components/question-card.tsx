@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { CheckCircle2, XCircle, Loader2, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +15,8 @@ export interface QuestionCardData {
   exam_block: "gerais" | "especificos";
   question_weight: number;
   source_reference?: { banca?: string; ano?: number | string; prova?: string } | null;
+  topic?: string;
+  is_demo?: boolean;
 }
 
 export interface FeedbackData {
@@ -30,22 +32,38 @@ export function QuestionCard({
   onNext,
   feedback,
   submitting,
+  ttsEnabled = false,
+  showConfidence = false,
 }: {
   question: QuestionCardData;
   submitting: boolean;
   feedback: FeedbackData | null;
   onSubmit: (selectedKey: string, elapsedMs: number) => void;
   onNext: () => void;
+  ttsEnabled?: boolean;
+  showConfidence?: boolean;
 }) {
   const [selected, setSelected] = useState<string | null>(null);
+  const [confidence, setConfidence] = useState<"baixa" | "media" | "alta" | null>(null);
+  const [speaking, setSpeaking] = useState(false);
   const startedAtRef = useRef<number>(Date.now());
   const groupRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setSelected(null);
+    setConfidence(null);
     startedAtRef.current = Date.now();
+    if (typeof window !== "undefined") window.speechSynthesis?.cancel();
+    setSpeaking(false);
   }, [question.id]);
+
+  useEffect(
+    () => () => {
+      if (typeof window !== "undefined") window.speechSynthesis?.cancel();
+    },
+    [],
+  );
 
   useEffect(() => {
     if (feedback && feedbackRef.current) feedbackRef.current.focus();
@@ -72,11 +90,31 @@ export function QuestionCard({
     onSubmit(selected, Date.now() - startedAtRef.current);
   }
 
-  const blockLabel = question.exam_block === "gerais" ? "Conhecimentos Gerais" : "Conhecimentos Específicos";
+  function toggleSpeech() {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    if (speaking) {
+      window.speechSynthesis.cancel();
+      setSpeaking(false);
+      return;
+    }
+    const alternatives = question.alternatives
+      .map((alternative) => `${alternative.key}. ${alternative.text}`)
+      .join(". ");
+    const utterance = new SpeechSynthesisUtterance(`${question.statement}. ${alternatives}`);
+    utterance.lang = "pt-BR";
+    utterance.rate = 0.92;
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+    setSpeaking(true);
+  }
+
+  const blockLabel =
+    question.exam_block === "gerais" ? "Conhecimentos Gerais" : "Conhecimentos Específicos";
 
   return (
     <article
-      className="surface-panel mx-auto max-w-3xl p-5 md:p-7"
+      className="question-surface p-5 md:p-7"
       onKeyDown={handleKeyDown}
       aria-labelledby="q-statement"
     >
@@ -91,7 +129,33 @@ export function QuestionCard({
             {question.source_reference.ano ? ` · ${question.source_reference.ano}` : ""}
           </span>
         )}
+        {(ttsEnabled || speaking) && (
+          <button
+            type="button"
+            onClick={toggleSpeech}
+            aria-pressed={speaking}
+            className="ml-auto inline-flex min-h-9 items-center gap-2 rounded-md border border-border px-3 normal-case tracking-normal hover:border-[var(--gold)]/60 hover:text-foreground"
+          >
+            {speaking ? (
+              <VolumeX className="size-4" aria-hidden />
+            ) : (
+              <Volume2 className="size-4" aria-hidden />
+            )}
+            {speaking ? "Parar leitura" : "Ouvir questão"}
+          </button>
+        )}
       </header>
+
+      {question.is_demo && (
+        <div className="mb-4 flex items-start gap-3 rounded-lg border border-[var(--gold)]/35 bg-[var(--gold)]/6 px-3 py-2 text-sm">
+          <strong className="text-[var(--gold)]">Demonstração</strong>
+          <span className="text-muted-foreground">
+            Questão autoral para testar o fluxo. Não é conteúdo oficial da banca.
+          </span>
+        </div>
+      )}
+
+      {question.topic && <p className="mb-2 text-sm text-[var(--gold)]">{question.topic}</p>}
 
       <h2 id="q-statement" className="text-lg leading-relaxed md:text-xl">
         {question.statement}
@@ -108,11 +172,13 @@ export function QuestionCard({
               <label
                 key={alt.key}
                 className={cn(
-                  "flex cursor-pointer items-start gap-3 rounded-lg border px-4 py-3 transition-colors",
+                  "flex min-h-14 cursor-pointer items-start gap-3 rounded-lg border px-4 py-3 transition-colors",
                   "border-border bg-[var(--surface-2)] hover:bg-[var(--surface-3)]",
                   isSelected && !feedback && "border-[var(--gold)] bg-[var(--surface-3)]",
-                  isCorrect && "border-[var(--correct)] bg-[color-mix(in_oklch,var(--correct)_18%,transparent)]",
-                  isWrongPick && "border-[var(--incorrect)] bg-[color-mix(in_oklch,var(--incorrect)_18%,transparent)]",
+                  isCorrect &&
+                    "border-[var(--correct)] bg-[color-mix(in_oklch,var(--correct)_18%,transparent)]",
+                  isWrongPick &&
+                    "border-[var(--incorrect)] bg-[color-mix(in_oklch,var(--incorrect)_18%,transparent)]",
                 )}
               >
                 <input
@@ -128,7 +194,9 @@ export function QuestionCard({
                   aria-hidden
                   className={cn(
                     "mt-0.5 inline-flex h-6 w-6 flex-none items-center justify-center rounded-full border font-semibold",
-                    isSelected ? "border-[var(--gold)] text-[var(--gold)]" : "border-border text-muted-foreground",
+                    isSelected
+                      ? "border-[var(--gold)] text-[var(--gold)]"
+                      : "border-border text-muted-foreground",
                   )}
                 >
                   {alt.key}
@@ -142,13 +210,39 @@ export function QuestionCard({
         </div>
       </fieldset>
 
-      <div
-        ref={feedbackRef}
-        tabIndex={-1}
-        aria-live="polite"
-        aria-atomic="true"
-        className="mt-6"
-      >
+      {showConfidence && !feedback && (
+        <fieldset className="mt-6">
+          <legend className="mb-2 text-sm text-muted-foreground">
+            Confiança na resposta (opcional)
+          </legend>
+          <div className="inline-flex overflow-hidden rounded-lg border border-border">
+            {(
+              [
+                ["baixa", "Baixa"],
+                ["media", "Média"],
+                ["alta", "Alta"],
+              ] as const
+            ).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={confidence === value}
+                onClick={() => setConfidence(confidence === value ? null : value)}
+                className={cn(
+                  "min-h-11 min-w-24 border-r border-border px-4 text-sm last:border-r-0",
+                  confidence === value
+                    ? "bg-[var(--gold)]/15 text-[var(--gold)]"
+                    : "text-muted-foreground hover:bg-accent",
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      )}
+
+      <div ref={feedbackRef} tabIndex={-1} aria-live="polite" aria-atomic="true" className="mt-6">
         {feedback && (
           <div
             className={cn(
@@ -165,11 +259,20 @@ export function QuestionCard({
                 <XCircle aria-hidden className="text-[var(--incorrect)]" />
               )}
               <span className="font-semibold">
-                {feedback.is_correct ? "Resposta correta." : `Resposta incorreta. Gabarito: ${feedback.correct_key}.`}
+                {feedback.is_correct
+                  ? "Resposta correta."
+                  : `Resposta incorreta. Gabarito: ${feedback.correct_key}.`}
               </span>
             </div>
             {feedback.explanation && (
-              <p className="mt-3 text-sm leading-relaxed text-foreground/90">{feedback.explanation}</p>
+              <p className="mt-3 text-sm leading-relaxed text-foreground/90">
+                {feedback.explanation}
+              </p>
+            )}
+            {question.source_reference?.prova && (
+              <p className="mt-3 text-xs text-muted-foreground">
+                Fonte de estudo: {question.source_reference.prova}
+              </p>
             )}
           </div>
         )}
@@ -185,7 +288,13 @@ export function QuestionCard({
           </Button>
         ) : (
           <Button variant="gold" size="lg" onClick={submit} disabled={!selected || submitting}>
-            {submitting ? <><Loader2 className="animate-spin" /> Enviando…</> : "Responder"}
+            {submitting ? (
+              <>
+                <Loader2 className="animate-spin" /> Enviando…
+              </>
+            ) : (
+              "Responder"
+            )}
           </Button>
         )}
       </div>

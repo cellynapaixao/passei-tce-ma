@@ -141,6 +141,20 @@ function PrefsPage() {
           />
         </div>
 
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Label htmlFor="tts">Leitura em voz alta</Label>
+            <p className="text-xs text-muted-foreground">
+              Exibe o comando para ouvir enunciado e alternativas.
+            </p>
+          </div>
+          <Switch
+            id="tts"
+            checked={prefs.tts_enabled}
+            onCheckedChange={(value) => save({ tts_enabled: value })}
+          />
+        </div>
+
         <div className="flex items-center justify-between">
           <div>
             <Label htmlFor="rm">Reduzir animações</Label>
@@ -159,8 +173,8 @@ function PrefsPage() {
           Cargo preferido (opcional)
         </h2>
         <p className="text-sm text-muted-foreground">
-          Quando definido, o Treino Geral prioriza questões aderentes ao seu cargo. Você pode
-          mudar a qualquer momento.
+          Quando definido, o Treino Geral prioriza questões aderentes ao seu cargo. Você pode mudar
+          a qualquer momento.
         </p>
         <select
           className="w-full rounded-md border border-input bg-[var(--surface-2)] px-3 py-2 text-sm"

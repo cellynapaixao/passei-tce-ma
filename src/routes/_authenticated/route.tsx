@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/re
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { BookOpenCheck, LogOut, RotateCcw, Settings2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -33,35 +34,45 @@ function AuthLayout() {
         >
           <Link
             to="/treino"
+            search={{ mode: undefined }}
             className="flex items-center gap-2 font-display text-sm font-semibold"
           >
-            <span className="inline-block h-2 w-2 rounded-full bg-[var(--gold)]" aria-hidden />
-            TCE-MA 2026
+            <span className="grid size-8 place-items-center rounded-md border border-[var(--gold)]/50 text-[var(--gold)]">
+              <BookOpenCheck className="size-4" aria-hidden />
+            </span>
+            <span className="hidden sm:inline">
+              Passei! <span className="text-[var(--gold)]">TCE-MA</span>
+            </span>
           </Link>
           <div className="flex items-center gap-1 text-sm">
             <Link
               to="/treino"
+              search={{ mode: undefined }}
               className="rounded px-3 py-1.5 text-muted-foreground hover:bg-accent hover:text-foreground [&.active]:text-[var(--gold)]"
               activeProps={{ className: "active" }}
             >
-              Treino
+              <BookOpenCheck className="size-4 sm:hidden" aria-hidden />
+              <span className="hidden sm:inline">Treino</span>
             </Link>
             <Link
               to="/revisao"
               className="rounded px-3 py-1.5 text-muted-foreground hover:bg-accent hover:text-foreground [&.active]:text-[var(--gold)]"
               activeProps={{ className: "active" }}
             >
-              Revisão
+              <RotateCcw className="size-4 sm:hidden" aria-hidden />
+              <span className="hidden sm:inline">Revisão</span>
             </Link>
             <Link
               to="/preferencias"
               className="rounded px-3 py-1.5 text-muted-foreground hover:bg-accent hover:text-foreground [&.active]:text-[var(--gold)]"
               activeProps={{ className: "active" }}
             >
-              Preferências
+              <Settings2 className="size-4 sm:hidden" aria-hidden />
+              <span className="hidden sm:inline">Preferências</span>
             </Link>
             <Button variant="ghost" size="sm" onClick={signOut}>
-              Sair
+              <LogOut className="size-4" aria-hidden />
+              <span className="hidden md:inline">Sair</span>
             </Button>
           </div>
         </nav>

@@ -54,15 +54,15 @@
 }
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0.65rem;
 
   /* Base petróleo profundo */
-  --background: oklch(0.19 0.028 220);
+  --background: oklch(0.155 0.031 235);
   --foreground: oklch(0.96 0.008 220);
 
-  --surface-1: oklch(0.22 0.026 220);
-  --surface-2: oklch(0.26 0.024 220);
-  --surface-3: oklch(0.31 0.022 220);
+  --surface-1: oklch(0.195 0.028 230);
+  --surface-2: oklch(0.235 0.027 226);
+  --surface-3: oklch(0.285 0.025 224);
 
   --card: oklch(0.22 0.026 220);
   --card-foreground: oklch(0.96 0.008 220);
@@ -142,7 +142,9 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.001ms !important;
       transition-duration: 0.001ms !important;
     }
@@ -153,9 +155,13 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     line-height: 1.55;
+    min-width: 320px;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     letter-spacing: -0.01em;
   }
@@ -164,6 +170,153 @@
     outline: 2px solid var(--gold);
     outline-offset: 2px;
     border-radius: 4px;
+  }
+}
+
+@layer components {
+  .home-hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
+    background:
+      radial-gradient(
+        circle at 18% 32%,
+        color-mix(in oklch, var(--primary) 32%, transparent),
+        transparent 34%
+      ),
+      linear-gradient(135deg, color-mix(in oklch, var(--background) 96%, black), var(--background));
+  }
+
+  .territory-field {
+    position: absolute;
+    inset: 22% 48% -12% -12%;
+    opacity: 0.26;
+    background-image:
+      repeating-radial-gradient(
+        ellipse at 42% 55%,
+        transparent 0 18px,
+        color-mix(in oklch, var(--gold) 30%, transparent) 19px 20px,
+        transparent 21px 34px
+      ),
+      linear-gradient(
+        90deg,
+        transparent 49.7%,
+        color-mix(in oklch, var(--gold) 26%, transparent) 50%,
+        transparent 50.3%
+      ),
+      linear-gradient(
+        0deg,
+        transparent 49.7%,
+        color-mix(in oklch, var(--gold) 20%, transparent) 50%,
+        transparent 50.3%
+      );
+    background-size:
+      auto,
+      48px 48px,
+      48px 48px;
+    mask-image: linear-gradient(to right, black, transparent 90%);
+    pointer-events: none;
+  }
+
+  .cargo-selector {
+    border: 1px solid color-mix(in oklch, var(--border) 90%, transparent);
+    border-radius: 0.9rem;
+    background: color-mix(in oklch, var(--surface-1) 94%, transparent);
+    box-shadow: 0 24px 70px color-mix(in oklch, black 42%, transparent);
+    padding: 1rem;
+  }
+
+  .cargo-group {
+    overflow: hidden;
+    border: 1px solid color-mix(in oklch, var(--border) 80%, transparent);
+    border-radius: 0.65rem;
+    background: var(--surface-2);
+  }
+
+  .metric-rail,
+  .study-paths {
+    display: grid;
+    gap: 1.4rem;
+    border: 1px solid color-mix(in oklch, var(--border) 80%, transparent);
+    border-radius: 0.8rem;
+    background: color-mix(in oklch, var(--surface-1) 86%, transparent);
+    padding: 1.25rem 1.5rem;
+  }
+
+  .metric-rail {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: center;
+  }
+  .metric-rail > * + * {
+    border-left: 1px solid var(--border);
+    padding-left: 1.4rem;
+  }
+  .study-paths {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .study-paths > div + div {
+    border-left: 1px solid var(--border);
+    padding-left: 1.4rem;
+  }
+
+  .question-surface {
+    border: 1px solid color-mix(in oklch, var(--border) 88%, transparent);
+    border-radius: 0.8rem;
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklch, var(--surface-1) 96%, black),
+      var(--surface-1)
+    );
+    box-shadow: 0 22px 60px color-mix(in oklch, black 32%, transparent);
+  }
+
+  .session-rail {
+    border-left: 1px solid var(--border);
+    background:
+      radial-gradient(
+        ellipse at 110% 50%,
+        color-mix(in oklch, var(--gold) 10%, transparent),
+        transparent 45%
+      ),
+      var(--surface-1);
+    padding: 1.4rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .territory-field {
+    inset: 0 -10% 55% 10%;
+    opacity: 0.12;
+  }
+  .metric-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .metric-rail > * + * {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .study-paths {
+    grid-template-columns: 1fr;
+  }
+  .study-paths > div + div {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+    padding-left: 0;
+    padding-top: 1rem;
+  }
+  .session-rail {
+    border: 1px solid var(--border);
+    border-radius: 0.8rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .metric-rail {
+    grid-template-columns: 1fr;
+  }
+  .metric-rail > * + * {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
   }
 }
 

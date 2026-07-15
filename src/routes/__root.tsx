@@ -43,16 +43,23 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold text-foreground">Não foi possível carregar a página</h1>
+        <h1 className="text-xl font-semibold text-foreground">
+          Não foi possível carregar a página
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">Tente novamente ou volte ao início.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
-            onClick={() => { router.invalidate(); reset(); }}
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
             className="rounded-md bg-[var(--gold)] px-4 py-2 text-sm font-semibold text-[var(--gold-foreground)]"
           >
             Tentar novamente
           </button>
-          <a href="/" className="rounded-md border border-input px-4 py-2 text-sm">Início</a>
+          <a href="/" className="rounded-md border border-input px-4 py-2 text-sm">
+            Início
+          </a>
         </div>
       </div>
     </div>
@@ -64,13 +71,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "TCE-MA 2026 — Treinador de precisão para o concurso" },
+      { title: "Passei! TCE-MA — Treino orientado pelo edital 2026" },
       {
         name: "description",
         content:
-          "Plataforma de qualificação por questões para o TCE-MA 2026: seleção adaptativa, feedback pedagógico e revisão espaçada.",
+          "Escolha entre os 16 cargos do TCE-MA 2026 e teste um treino de questões com feedback pedagógico.",
       },
-      { property: "og:title", content: "TCE-MA 2026 — Treinador de precisão" },
+      { property: "og:title", content: "Passei! TCE-MA" },
       {
         property: "og:description",
         content:
@@ -125,7 +132,9 @@ function ApplyPreferences() {
       el.classList.remove("a11y-scale-115", "a11y-scale-130");
       if (p.font_scale === 115) el.classList.add("a11y-scale-115");
       if (p.font_scale === 130) el.classList.add("a11y-scale-130");
-    } catch {}
+    } catch {
+      // Preferências inválidas são ignoradas e os padrões visuais permanecem ativos.
+    }
   }, []);
   return null;
 }
@@ -134,6 +143,8 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   useEffect(() => {
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY)
+      return;
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       router.invalidate();

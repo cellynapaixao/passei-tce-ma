@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TreinoLivreRouteImport } from './routes/treino-livre'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -16,6 +17,11 @@ import { Route as AuthenticatedTreinoRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedRevisaoRouteImport } from './routes/_authenticated/revisao'
 import { Route as AuthenticatedPreferenciasRouteImport } from './routes/_authenticated/preferencias'
 
+const TreinoLivreRoute = TreinoLivreRouteImport.update({
+  id: '/treino-livre',
+  path: '/treino-livre',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -50,6 +56,7 @@ const AuthenticatedPreferenciasRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/treino-livre': typeof TreinoLivreRoute
   '/preferencias': typeof AuthenticatedPreferenciasRoute
   '/revisao': typeof AuthenticatedRevisaoRoute
   '/treino': typeof AuthenticatedTreinoRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/treino-livre': typeof TreinoLivreRoute
   '/preferencias': typeof AuthenticatedPreferenciasRoute
   '/revisao': typeof AuthenticatedRevisaoRoute
   '/treino': typeof AuthenticatedTreinoRoute
@@ -66,20 +74,23 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/treino-livre': typeof TreinoLivreRoute
   '/_authenticated/preferencias': typeof AuthenticatedPreferenciasRoute
   '/_authenticated/revisao': typeof AuthenticatedRevisaoRoute
   '/_authenticated/treino': typeof AuthenticatedTreinoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/preferencias' | '/revisao' | '/treino'
+  fullPaths:
+    '/' | '/auth' | '/treino-livre' | '/preferencias' | '/revisao' | '/treino'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/preferencias' | '/revisao' | '/treino'
+  to: '/' | '/auth' | '/treino-livre' | '/preferencias' | '/revisao' | '/treino'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/treino-livre'
     | '/_authenticated/preferencias'
     | '/_authenticated/revisao'
     | '/_authenticated/treino'
@@ -89,10 +100,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  TreinoLivreRoute: typeof TreinoLivreRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/treino-livre': {
+      id: '/treino-livre'
+      path: '/treino-livre'
+      fullPath: '/treino-livre'
+      preLoaderRoute: typeof TreinoLivreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -157,6 +176,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  TreinoLivreRoute: TreinoLivreRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
