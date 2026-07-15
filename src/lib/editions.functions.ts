@@ -23,7 +23,7 @@ export const listPositions = createServerFn({ method: "GET" }).handler(async () 
   const sb = serverPublic();
   const { data, error } = await sb
     .from("positions")
-    .select("id, code, cargo, especialidade, full_name, exam_date, edition_id")
+    .select("id, code, cargo, especialidade, full_name, formacao, exam_date, edition_id")
     .order("cargo", { ascending: true })
     .order("especialidade", { ascending: true });
   if (error) throw new Error(error.message);
