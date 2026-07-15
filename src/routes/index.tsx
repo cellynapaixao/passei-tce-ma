@@ -61,7 +61,7 @@ function Landing() {
                 Escolha seu cargo e inicie um treino livre com questões objetivas orientadas pelo
                 edital do TCE-MA 2026.
               </p>
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className="mt-7 hidden flex-wrap gap-3 sm:flex">
                 <Button asChild variant="gold" size="lg">
                   <Link to="/treino-livre" search={{ cargo: selected.code }}>
                     Começar treino livre <ArrowRight aria-hidden />
@@ -76,7 +76,7 @@ function Landing() {
                   Conferir edital oficial <ExternalLink className="size-4" aria-hidden />
                 </a>
               </div>
-              <dl className="mt-9 grid max-w-lg grid-cols-2 gap-x-6 gap-y-4 border-t border-border/60 pt-5 text-sm">
+              <dl className="mt-9 hidden max-w-lg grid-cols-2 gap-x-6 gap-y-4 border-t border-border/60 pt-5 text-sm sm:grid">
                 <div>
                   <dt className="text-muted-foreground">Cargo selecionado</dt>
                   <dd className="mt-1 font-medium text-[var(--gold)]">{selected.specialty}</dd>
@@ -241,7 +241,24 @@ function CargoSelector({
         1. Escolha seu cargo ou especialidade{" "}
         <span className="text-muted-foreground">(16 no total)</span>
       </p>
-      <div className="space-y-2">
+      <label className="block lg:hidden">
+        <span className="sr-only">Cargo ou especialidade</span>
+        <select
+          value={selectedCode}
+          onChange={(event) => onSelect(event.target.value)}
+          className="min-h-14 w-full rounded-lg border border-border bg-[var(--surface-2)] px-4 text-base font-medium text-foreground"
+        >
+          {EXAM_POSITIONS.map((position) => (
+            <option key={position.code} value={position.code}>
+              {position.specialty}
+            </option>
+          ))}
+        </select>
+        <span className="mt-2 block text-xs text-muted-foreground">
+          Você poderá trocar de cargo quando quiser.
+        </span>
+      </label>
+      <div className="hidden space-y-2 lg:block">
         {POSITION_GROUPS.map((group) => (
           <CargoGroup
             key={group.key}
@@ -260,7 +277,7 @@ function CargoSelector({
             Começar treino livre <ArrowRight aria-hidden />
           </Link>
         </Button>
-        <Button asChild variant="outline" size="lg">
+        <Button asChild variant="outline" size="lg" className="hidden sm:inline-flex">
           <a href="#cargos">Ver todos os cargos</a>
         </Button>
       </div>
