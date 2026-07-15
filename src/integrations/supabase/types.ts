@@ -56,6 +56,7 @@ export type Database = {
           edition_id: string
           especialidade: string
           exam_date: string | null
+          formacao: string | null
           full_name: string
           id: string
         }
@@ -67,6 +68,7 @@ export type Database = {
           edition_id: string
           especialidade: string
           exam_date?: string | null
+          formacao?: string | null
           full_name: string
           id?: string
         }
@@ -78,6 +80,7 @@ export type Database = {
           edition_id?: string
           especialidade?: string
           exam_date?: string | null
+          formacao?: string | null
           full_name?: string
           id?: string
         }
