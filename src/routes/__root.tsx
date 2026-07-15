@@ -64,20 +64,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "TCE-MA 2026 — Treinador de precisão para o concurso" },
+      { title: "TCE-MA 2026 — Treinador de precisão" },
       {
         name: "description",
         content:
-          "Plataforma de qualificação por questões para o TCE-MA 2026: seleção adaptativa, feedback pedagógico e revisão espaçada.",
+          "Qualificação por questões para o concurso TCE-MA 2026: seleção adaptativa, feedback pedagógico e revisão espaçada.",
       },
       { property: "og:title", content: "TCE-MA 2026 — Treinador de precisão" },
       {
         property: "og:description",
         content:
-          "Cada questão é uma decisão pedagógica: qual estudar agora, por que, e o que fazer depois.",
+          "Qualificação por questões para o concurso TCE-MA 2026: seleção adaptativa, feedback pedagógico e revisão espaçada.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "TCE-MA 2026 — Treinador de precisão" },
+      { name: "twitter:description", content: "Qualificação por questões para o concurso TCE-MA 2026: seleção adaptativa, feedback pedagógico e revisão espaçada." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2ef945b6-19ca-4fe5-b879-537f0fef2172/id-preview-2e9cad05--f69170a1-ea5b-472f-abbe-9cbc04dd448c.lovable.app-1783981014737.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2ef945b6-19ca-4fe5-b879-537f0fef2172/id-preview-2e9cad05--f69170a1-ea5b-472f-abbe-9cbc04dd448c.lovable.app-1783981014737.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
