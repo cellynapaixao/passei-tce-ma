@@ -20,9 +20,12 @@ import {
 import { PublicHeader } from "@/components/public-header";
 import { Button } from "@/components/ui/button";
 import {
+  CEBRASPE_PAGE_URL,
+  EXAM_FACTS,
   EXAM_POSITIONS,
   OFFICIAL_NOTICE_URL,
   POSITION_GROUPS,
+  daysUntil,
   formatExamDate,
   getPosition,
   type PositionGroup,
@@ -92,7 +95,50 @@ function Landing() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-4 sm:px-6" aria-labelledby="preparacao-title">
+        <section
+          className="mx-auto max-w-7xl px-4 pt-2 sm:px-6"
+          aria-labelledby="certame-status-title"
+        >
+          <div className="rounded-xl border border-border bg-[var(--surface-1)] p-4 sm:p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2
+                id="certame-status-title"
+                className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--gold)]"
+              >
+                Status oficial do certame
+              </h2>
+              <a
+                href={CEBRASPE_PAGE_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+              >
+                Página da banca <ExternalLink className="size-3.5" aria-hidden />
+              </a>
+            </div>
+            <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
+              <Fact label="Vagas imediatas" value={String(EXAM_FACTS.vagasImediatas)} />
+              <Fact label="Remuneração até" value={EXAM_FACTS.remuneracaoMaxima} />
+              <Fact
+                label="Inscrições"
+                value="Encerradas"
+                hint={`${EXAM_FACTS.inscricoes.inicio} a ${EXAM_FACTS.inscricoes.fim}`}
+              />
+              <Fact
+                label="Faltam para a prova"
+                value={`${daysUntil(selected.examDate)} dias`}
+                hint={`${selected.groupLabel} · ${formatExamDate(selected.examDate)}`}
+              />
+            </dl>
+            <p className="mt-4 border-t border-border/60 pt-3 text-xs text-muted-foreground">
+              Edital nº {EXAM_FACTS.edital.numero}, de {EXAM_FACTS.edital.data}. Retificado pelo
+              Edital nº {EXAM_FACTS.retificacao.numero}, de {EXAM_FACTS.retificacao.data}:{" "}
+              {EXAM_FACTS.retificacao.resumo}
+            </p>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-4 pt-8 sm:px-6" aria-labelledby="preparacao-title">
           <div className="metric-rail">
             <div>
               <p
@@ -340,6 +386,16 @@ function CargoGroup({
         ))}
       </div>
     </details>
+  );
+}
+
+function Fact({ label, value, hint }: { label: string; value: string; hint?: string }) {
+  return (
+    <div className="min-w-0">
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dd className="mt-1 font-display text-xl font-semibold text-foreground">{value}</dd>
+      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+    </div>
   );
 }
 

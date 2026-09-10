@@ -15,6 +15,31 @@ export interface ExamPosition {
 export const OFFICIAL_NOTICE_URL =
   "https://cdn.cebraspe.org.br/concursos/TCE_MA_26/arquivos/5FADC380CB030A07F557A9C5EEA6D063017A2CA675E683F39C50B65E6D70F57B.pdf";
 
+export const CEBRASPE_PAGE_URL = "https://www.cebraspe.org.br/concursos/tce_ma_26";
+
+/** Dados oficiais do certame, conforme Edital nº 1 (06/07/2026) e Edital nº 2 (29/07/2026). */
+export const EXAM_FACTS = {
+  organizer: "Cebraspe",
+  vagasImediatas: 40,
+  remuneracaoMaxima: "R$ 20.112,20",
+  inscricoes: { inicio: "17/07/2026", fim: "21/08/2026", status: "encerradas" as const },
+  edital: { numero: 1, data: "6 de julho de 2026" },
+  retificacao: {
+    numero: 2,
+    data: "29 de julho de 2026",
+    resumo:
+      "Retificação do subitem 5.1.3.4 e do tópico de Competências Digitais e Informática Aplicada.",
+  },
+  provaAnalista: "22/11/2026",
+  provaAuditorTecnico: "29/11/2026",
+};
+
+/** Dias restantes até a data de prova informada (formato AAAA-MM-DD). */
+export function daysUntil(date: string) {
+  const target = new Date(`${date}T08:00:00-03:00`).getTime();
+  return Math.max(0, Math.ceil((target - Date.now()) / 86_400_000));
+}
+
 export const EXAM_POSITIONS: ExamPosition[] = [
   {
     number: 1,
