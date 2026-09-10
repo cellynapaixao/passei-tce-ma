@@ -20,9 +20,12 @@ import {
 import { PublicHeader } from "@/components/public-header";
 import { Button } from "@/components/ui/button";
 import {
+  CEBRASPE_PAGE_URL,
+  EXAM_FACTS,
   EXAM_POSITIONS,
   OFFICIAL_NOTICE_URL,
   POSITION_GROUPS,
+  daysUntil,
   formatExamDate,
   getPosition,
   type PositionGroup,
@@ -383,6 +386,16 @@ function CargoGroup({
         ))}
       </div>
     </details>
+  );
+}
+
+function Fact({ label, value, hint }: { label: string; value: string; hint?: string }) {
+  return (
+    <div className="min-w-0">
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dd className="mt-1 font-display text-xl font-semibold text-foreground">{value}</dd>
+      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+    </div>
   );
 }
 
