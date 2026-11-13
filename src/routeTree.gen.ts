@@ -9,17 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TreinoLivreRouteImport } from './routes/treino-livre'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedTreinoRouteImport } from './routes/_authenticated/treino'
-import { Route as AuthenticatedRevisaoRouteImport } from './routes/_authenticated/revisao'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as TreinoLivreRouteImport } from './routes/treino-livre'
 import { Route as AuthenticatedPreferenciasRouteImport } from './routes/_authenticated/preferencias'
+import { Route as AuthenticatedRevisaoRouteImport } from './routes/_authenticated/revisao'
+import { Route as AuthenticatedTreinoRouteImport } from './routes/_authenticated/treino'
 
-const TreinoLivreRoute = TreinoLivreRouteImport.update({
-  id: '/treino-livre',
-  path: '/treino-livre',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -27,24 +31,10 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const TreinoLivreRoute = TreinoLivreRouteImport.update({
+  id: '/treino-livre',
+  path: '/treino-livre',
   getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedTreinoRoute = AuthenticatedTreinoRouteImport.update({
-  id: '/treino',
-  path: '/treino',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedRevisaoRoute = AuthenticatedRevisaoRouteImport.update({
-  id: '/revisao',
-  path: '/revisao',
-  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPreferenciasRoute =
   AuthenticatedPreferenciasRouteImport.update({
@@ -52,6 +42,16 @@ const AuthenticatedPreferenciasRoute =
     path: '/preferencias',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedRevisaoRoute = AuthenticatedRevisaoRouteImport.update({
+  id: '/revisao',
+  path: '/revisao',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedTreinoRoute = AuthenticatedTreinoRouteImport.update({
+  id: '/treino',
+  path: '/treino',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -82,12 +82,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/auth'
-    | '/treino-livre'
-    | '/preferencias'
-    | '/revisao'
-    | '/treino'
+    '/' | '/auth' | '/treino-livre' | '/preferencias' | '/revisao' | '/treino'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/auth' | '/treino-livre' | '/preferencias' | '/revisao' | '/treino'
   id:
@@ -110,18 +105,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/treino-livre': {
-      id: '/treino-livre'
-      path: '/treino-livre'
-      fullPath: '/treino-livre'
-      preLoaderRoute: typeof TreinoLivreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -131,18 +119,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/treino': {
-      id: '/_authenticated/treino'
-      path: '/treino'
-      fullPath: '/treino'
-      preLoaderRoute: typeof AuthenticatedTreinoRouteImport
+    '/treino-livre': {
+      id: '/treino-livre'
+      path: '/treino-livre'
+      fullPath: '/treino-livre'
+      preLoaderRoute: typeof TreinoLivreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/preferencias': {
+      id: '/_authenticated/preferencias'
+      path: '/preferencias'
+      fullPath: '/preferencias'
+      preLoaderRoute: typeof AuthenticatedPreferenciasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/revisao': {
@@ -152,11 +147,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRevisaoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/preferencias': {
-      id: '/_authenticated/preferencias'
-      path: '/preferencias'
-      fullPath: '/preferencias'
-      preLoaderRoute: typeof AuthenticatedPreferenciasRouteImport
+    '/_authenticated/treino': {
+      id: '/_authenticated/treino'
+      path: '/treino'
+      fullPath: '/treino'
+      preLoaderRoute: typeof AuthenticatedTreinoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
